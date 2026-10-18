@@ -1,517 +1,774 @@
 <!DOCTYPE html>
-<html lang="de" class="c-wait">
+<html lang="de">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cbryr</title>
-  <meta name="description" content="Collin – Azubi Fachinformatiker für Systemintegration. Homelab, Self-Hosting und Bastelprojekte." />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Konsole · cbryr.de</title>
+  <link rel="icon" href="../favicon-admin.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="../apple-touch-icon-admin.png" />
+  <meta name="theme-color" content="#141210" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    /* ============ FARBEN (hier anpassen) ============ */
     :root {
-      --bg: #faf7f2;
-      --surface: #ffffff;
-      --text: #1c1917;
-      --muted: #6b625a;
-      --border: #e8e1d7;
-      --accent: #d9531e;
-      --accent-soft: #fbe9df;
-      --warn: #2563eb;
-      --warn-soft: #e3ecfd;
-      --idea: #7c3aed;
-      --idea-soft: #efe7fd;
+      --bg: #faf7f2; --surface: #ffffff; --surface-2: #f3eee7; --text: #1c1917; --muted: #6b625a;
+      --border: #e8e1d7; --accent: #d9531e; --accent-soft: #fbe9df;
+      --ok: #15803d; --ok-soft: #dcfce7; --bad: #b91c1c; --bad-soft: #fee2e2; --mid: #a16207; --mid-soft: #fef3c7;
     }
     @media (prefers-color-scheme: dark) {
       :root:not([data-theme="light"]) {
-        --bg: #141210;
-        --surface: #1d1a17;
-        --text: #f2ede6;
-        --muted: #a89f95;
-        --border: #2e2924;
-        --accent: #ff7a45;
-        --accent-soft: #3a1f12;
-        --warn: #7aa7ff;
-        --warn-soft: #17223a;
-        --idea: #b8a6ff;
-        --idea-soft: #231d3a;
+        --bg: #141210; --surface: #1d1a17; --surface-2: #25211d; --text: #f2ede6; --muted: #a89f95;
+        --border: #2e2924; --accent: #ff7a45; --accent-soft: #3a1f12;
+        --ok: #4ade80; --ok-soft: #12301d; --bad: #f87171; --bad-soft: #3a1515; --mid: #fbbf24; --mid-soft: #33270c;
       }
     }
     :root[data-theme="dark"] {
-      --bg: #141210;
-      --surface: #1d1a17;
-      --text: #f2ede6;
-      --muted: #a89f95;
-      --border: #2e2924;
-      --accent: #ff7a45;
-      --accent-soft: #3a1f12;
-      --warn: #7aa7ff;
-      --warn-soft: #17223a;
-      --idea: #b8a6ff;
-      --idea-soft: #231d3a;
+      --bg: #141210; --surface: #1d1a17; --surface-2: #25211d; --text: #f2ede6; --muted: #a89f95;
+      --border: #2e2924; --accent: #ff7a45; --accent-soft: #3a1f12;
+      --ok: #4ade80; --ok-soft: #12301d; --bad: #f87171; --bad-soft: #3a1515; --mid: #fbbf24; --mid-soft: #33270c;
     }
-
-    /* ============ GRUNDLAYOUT ============ */
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: "Inter", system-ui, sans-serif;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
-    a { color: inherit; }
-    .wrap { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+    body { background: var(--bg); color: var(--text); font-family: "Inter", system-ui, sans-serif; line-height: 1.5; -webkit-font-smoothing: antialiased; }
     .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+    a { color: var(--accent); }
+    button, input, textarea { font: inherit; color: inherit; }
+    [hidden] { display: none !important; }
 
-    /* ============ NAVIGATION ============ */
-    nav {
-      position: sticky; top: 0; z-index: 10;
-      background: color-mix(in srgb, var(--bg) 85%, transparent);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border);
-    }
-    nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 56px; }
-    .logo { font-weight: 600; text-decoration: none; }
+    /* Kopfzeile */
+    header { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+    header .wrap { display: flex; align-items: center; gap: 16px; height: 56px; }
+    .logo { font-weight: 600; text-decoration: none; color: var(--text); white-space: nowrap; }
     .logo span { color: var(--accent); }
-    .nav-links { display: flex; gap: 20px; align-items: center; }
-    .nav-links a { text-decoration: none; color: var(--muted); font-size: 0.92rem; }
-    .nav-links a:hover { color: var(--text); }
-    .theme-btn {
-      background: none; border: 1px solid var(--border); color: var(--text);
-      border-radius: 8px; width: 34px; height: 34px; cursor: pointer; font-size: 1rem;
+    .logo em { font-style: normal; color: var(--muted); font-weight: 400; }
+    nav.tabs { display: flex; gap: 4px; margin-left: 12px; overflow-x: auto; }
+    nav.tabs button { background: none; border: 0; padding: 7px 12px; border-radius: 8px; cursor: pointer; color: var(--muted); font-size: 0.92rem; white-space: nowrap; }
+    nav.tabs button.active { background: var(--surface-2); color: var(--text); font-weight: 500; }
+    .spacer { flex: 1; }
+    .icon-btn { background: none; border: 1px solid var(--border); border-radius: 8px; height: 34px; padding: 0 10px; cursor: pointer; font-size: 0.88rem; white-space: nowrap; }
+    .link-btn { display: inline-flex; align-items: center; text-decoration: none; color: inherit; }
+    @media (max-width: 640px) {
+      .hide-sm { display: none !important; }
+      header .wrap { flex-wrap: wrap; height: auto; padding-top: 10px; padding-bottom: 8px; row-gap: 8px; }
+      nav.tabs { order: 3; width: 100%; margin-left: 0; }
     }
-    @media (max-width: 600px) { .nav-links a.hide-sm { display: none; } }
 
-    /* ============ HERO ============ */
-    .hero { padding: 96px 0 72px; }
-    .hero-grid { display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: center; }
-    .avatar { width: 220px; height: 220px; object-fit: cover; border-radius: 50%; border: 4px solid var(--surface); box-shadow: 0 0 0 2px var(--accent), 0 20px 50px rgba(0,0,0,.15); }
-    @media (max-width: 760px) {
-      .hero-grid { grid-template-columns: 1fr; gap: 32px; }
-      .avatar { width: 140px; height: 140px; order: -1; }
-    }
-    .prompt { color: var(--accent); font-size: 0.9rem; margin-bottom: 16px; }
-    .prompt .cursor { display: inline-block; width: 8px; height: 1em; background: var(--accent); vertical-align: -2px; animation: blink 1s steps(1) infinite; }
-    @keyframes blink { 50% { opacity: 0; } }
-    h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 20px; }
-    .hero p { font-size: 1.15rem; color: var(--muted); max-width: 620px; }
-    .hero-actions { display: flex; gap: 12px; margin-top: 32px; flex-wrap: wrap; }
-    .btn {
-      display: inline-block; padding: 10px 18px; border-radius: 10px; text-decoration: none;
-      font-weight: 500; font-size: 0.95rem; border: 1px solid var(--border);
-    }
-    .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    main { padding: 28px 0 80px; }
+    h1 { font-size: 1.6rem; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .sub { color: var(--muted); margin-bottom: 24px; }
+    h2 { font-size: 1rem; margin-bottom: 14px; }
+
+    /* Karten */
+    .grid { display: grid; gap: 16px; }
+    .grid.cols-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+    .grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+    .grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; min-width: 0; }
+    .card .k { font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+    .card .v { font-size: 1.6rem; font-weight: 600; letter-spacing: -0.01em; }
+    .card .s { font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
+    .section { margin-top: 28px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); display: inline-block; flex: none; }
+    .dot.ok { background: var(--ok); box-shadow: 0 0 0 3px var(--ok-soft); }
+    .dot.bad { background: var(--bad); box-shadow: 0 0 0 3px var(--bad-soft); }
+    .dot.mid { background: var(--mid); box-shadow: 0 0 0 3px var(--mid-soft); }
+    .pill { display: inline-block; font-size: 0.75rem; padding: 2px 9px; border-radius: 999px; background: var(--surface-2); color: var(--muted); font-weight: 500; }
+    .pill.ok { background: var(--ok-soft); color: var(--ok); }
+    .pill.bad { background: var(--bad-soft); color: var(--bad); }
+    .pill.mid { background: var(--mid-soft); color: var(--mid); }
+
+    /* Diagramm */
+    .chart { width: 100%; height: 180px; display: block; }
+    .chart rect.bar { fill: var(--accent); opacity: .85; }
+    .chart rect.bar:hover { opacity: 1; }
+    .chart text { fill: var(--muted); font-size: 10px; font-family: "JetBrains Mono", monospace; }
+    .chart line { stroke: var(--border); }
+    .chart-tip { font-size: 0.85rem; color: var(--muted); min-height: 1.3em; margin-top: 6px; }
+
+    /* Ranglisten */
+    .rank { list-style: none; display: grid; gap: 8px; }
+    .rank li { position: relative; display: flex; justify-content: space-between; gap: 12px; padding: 6px 10px; border-radius: 8px; font-size: 0.9rem; overflow: hidden; }
+    .rank li .bg { position: absolute; inset: 0; background: var(--accent-soft); border-radius: 8px; transform-origin: left; z-index: 0; }
+    .rank li span { position: relative; z-index: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .rank li b { position: relative; z-index: 1; font-weight: 600; }
+    .empty { color: var(--muted); font-size: 0.9rem; }
+
+    /* Commits */
+    .commits { list-style: none; }
+    .commits li { display: flex; gap: 12px; align-items: baseline; padding: 10px 0; border-top: 1px solid var(--border); font-size: 0.92rem; }
+    .commits li:first-child { border-top: 0; }
+    .commits .msg { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .commits .when { color: var(--muted); font-size: 0.82rem; white-space: nowrap; }
+    .commits code { font-size: 0.8rem; color: var(--muted); }
+
+    /* Formulare */
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; font-weight: 500; font-size: 0.93rem; text-decoration: none; color: var(--text); }
+    .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
     :root[data-theme="dark"] .btn.primary { color: #1a0c05; }
     @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.primary { color: #1a0c05; } }
-    .btn:hover { transform: translateY(-1px); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    label.f { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+    .hint { font-size: 0.78rem; color: var(--muted); margin-top: 5px; }
+    input.t, textarea.t { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 0.95rem; outline: none; transition: border-color .15s, box-shadow .15s; }
+    input.t:focus, textarea.t:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    textarea.t { resize: vertical; min-height: 80px; line-height: 1.55; }
+    .field { margin-bottom: 16px; }
+    .field.changed input.t, .field.changed textarea.t { border-color: var(--mid); }
+    fieldset { border: 1px solid var(--border); border-radius: 14px; padding: 20px; background: var(--surface); margin-bottom: 16px; }
+    legend { padding: 0 8px; font-weight: 600; }
+    .sub-card { border: 1px dashed var(--border); border-radius: 12px; padding: 16px 16px 2px; margin-bottom: 14px; background: var(--bg); }
+    .sub-card h4 { font-size: 0.85rem; margin-bottom: 12px; color: var(--muted); font-weight: 600; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+    @media (max-width: 640px) { .row2 { grid-template-columns: 1fr; } }
 
-    /* ============ SEKTIONEN ============ */
-    section { padding: 56px 0; border-top: 1px solid var(--border); }
-    .label { font-size: 0.8rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
-    h2 { font-size: 1.8rem; letter-spacing: -0.01em; margin-bottom: 24px; }
-    .lead { color: var(--muted); max-width: 680px; margin-bottom: 16px; }
+    /* Speicherleiste */
+    .savebar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--surface); border-top: 1px solid var(--border); box-shadow: 0 -10px 30px rgba(0,0,0,.08); }
+    .savebar .wrap { display: flex; align-items: center; gap: 12px; padding-top: 12px; padding-bottom: 12px; flex-wrap: wrap; }
+    .savebar .msg-in { flex: 1; min-width: 200px; }
 
-    /* Über mich */
-    .about { display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; }
-    @media (max-width: 760px) { .about { grid-template-columns: 1fr; } }
-    .facts { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
-    .facts dt { font-size: 0.8rem; color: var(--muted); }
-    .facts dd { margin-bottom: 14px; font-weight: 500; }
-    .facts dd:last-child { margin-bottom: 0; }
-
-    /* Skills */
-    .skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-    .skill { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
-    .skill h3 { font-size: 1rem; margin-bottom: 10px; }
-    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
-    .tag { font-size: 0.78rem; padding: 3px 9px; border-radius: 999px; background: var(--bg); border: 1px solid var(--border); color: var(--muted); }
-
-    /* Icons in den Schlagwörtern */
-    .tag { display: inline-flex; align-items: center; gap: 6px; }
-    .ti { width: 13px; height: 13px; flex: none; background: var(--brand, currentColor); -webkit-mask: var(--i) center / contain no-repeat; mask: var(--i) center / contain no-repeat; }
-
-    /* Projekte */
-    .projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
-    .project {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px;
-      display: flex; flex-direction: column; gap: 12px; transition: border-color .2s;
-    }
-    .project:hover { border-color: var(--accent); }
-    .project-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-    .project h3 { font-size: 1.1rem; }
-    .project p { color: var(--muted); font-size: 0.95rem; flex: 1; }
-    .status { font-size: 0.72rem; padding: 3px 9px; border-radius: 999px; white-space: nowrap; font-weight: 500; }
-    .status.live { background: var(--accent-soft); color: var(--accent); }
-    .status.wip  { background: var(--warn-soft); color: var(--warn); }
-    .status.idea { background: var(--idea-soft); color: var(--idea); }
-    .project a.more { font-size: 0.9rem; color: var(--accent); text-decoration: none; font-weight: 500; }
-
-    /* Homelab */
-    .terminal { margin-top: 8px; box-shadow: 0 20px 50px rgba(0,0,0,.18); background: #0b0d10; color: #d6dae0; border-radius: 14px; overflow: hidden; border: 1px solid #222831; font-size: 0.85rem; }
+    /* Anmeldung */
+    .login { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; }
+    .login .box { width: 100%; max-width: 440px; }
+    .terminal { background: #0b0d10; color: #d6dae0; border-radius: 14px; overflow: hidden; border: 1px solid #222831; box-shadow: 0 20px 50px rgba(0,0,0,.18); }
     .terminal-bar { position: relative; display: flex; align-items: center; gap: 6px; padding: 10px 14px; background: #15191e; }
-    .terminal-bar i { width: 11px; height: 11px; border-radius: 50%; background: #3a4049; }
-    .terminal-bar i:nth-child(1) { background: #ff5f57; }
-    .terminal-bar i:nth-child(2) { background: #febc2e; }
-    .terminal-bar i:nth-child(3) { background: #28c840; }
-    .terminal pre { padding: 16px 18px; overflow-x: auto; line-height: 1.7; }
+    .terminal-bar i { width: 11px; height: 11px; border-radius: 50%; }
+    .terminal-bar i:nth-child(1) { background: #ff5f57; } .terminal-bar i:nth-child(2) { background: #febc2e; } .terminal-bar i:nth-child(3) { background: #28c840; }
     .terminal-title { position: absolute; left: 0; right: 0; text-align: center; color: #7d8590; font-size: 0.78rem; pointer-events: none; }
-    .terminal pre { font-size: 0.9rem; }
-    .t-cursor { display: inline-block; width: 8px; height: 1em; background: #ff7a45; vertical-align: -2px; animation: blink 1s steps(1) infinite; }
-    .t-g { color: #ff7a45; } .t-m { color: #7d8590; } .t-y { color: #f0b85a; }
+    .terminal .body { padding: 20px; }
+    .terminal .body p { font-size: 0.85rem; color: #9aa1ad; margin-bottom: 16px; }
+    .terminal .t-g { color: #ff7a45; }
+    .terminal input.t { background: #15191e; border-color: #2a3038; color: #e8eaed; font-family: "JetBrains Mono", monospace; font-size: 0.85rem; }
+    .terminal label.f, .terminal .hint { color: #8b929c; }
+    .terminal .check { display: flex; gap: 8px; align-items: center; font-size: 0.85rem; color: #c5cad2; margin: 12px 0 16px; }
+    .terminal .btn { width: 100%; justify-content: center; }
+    .terminal details { margin-top: 16px; font-size: 0.82rem; color: #8b929c; }
+    .terminal summary { cursor: pointer; }
+    .err { margin-top: 12px; font-size: 0.85rem; color: #f87171; min-height: 1.2em; }
 
-    /* Discord-Button */
-    .discord-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--surface); color: var(--text); cursor: pointer; font-family: inherit; }
-    .discord-btn svg { color: #5865f2; }
-    .copy-hint { margin-top: 12px; font-size: 0.85rem; color: var(--muted); min-height: 1.3em; }
-
-    /* Kontakt */
-    .contact { text-align: center; }
-    .contact .lead { margin: 0 auto 28px; }
-    .contact .hero-actions { justify-content: center; }
-
-    footer { padding: 32px 0; text-align: center; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border); }
-
-    /* Texte aus content.json laden, ohne alte Texte aufblitzen zu lassen */
-    html.c-wait .hero, html.c-wait main { opacity: 0; }
-    .hero, main { transition: opacity .25s; }
-
-    /* Schreibmaschinen-Effekt für die Überschrift */
-    .type-caret { display: inline-block; width: 0.07em; height: 0.9em; margin-left: 0.06em; background: var(--accent); vertical-align: -0.05em; animation: blink 1s steps(1) infinite; transition: opacity .4s; }
-    .type-caret.typing { animation: none; }
-    .type-caret.gone { opacity: 0; }
-
-    /* Einblend-Animation */
-    .reveal { opacity: 0; transform: translateY(12px); transition: opacity .6s, transform .6s; }
-    .reveal.visible { opacity: 1; transform: none; }
-    @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } html { scroll-behavior: auto; } }
+    .notice { border: 1px solid var(--border); background: var(--surface-2); border-radius: 12px; padding: 14px 16px; font-size: 0.9rem; color: var(--muted); }
+    .notice strong { color: var(--text); }
+    .toast { position: fixed; top: 70px; left: 50%; transform: translateX(-50%); z-index: 20; background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 0.9rem; box-shadow: 0 10px 30px rgba(0,0,0,.2); }
+    .switch { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.93rem; }
+    .switch input { width: 18px; height: 18px; accent-color: var(--accent); }
+    .skeleton { color: transparent !important; background: var(--surface-2); border-radius: 6px; animation: pulse 1.2s ease-in-out infinite; }
+    @keyframes pulse { 50% { opacity: .5; } }
   </style>
-  <!-- Besucherzählung mit GoatCounter (ohne Cookies). "cbryr" ist dein GoatCounter-Code. -->
-  <script data-goatcounter="https://cbryr.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
 
-  <!-- ============ NAVIGATION ============ -->
-  <nav>
-    <div class="wrap">
-      <a href="#" class="logo mono">cbryr<span>.</span>de</a>
-      <div class="nav-links">
-        <a href="#about" class="hide-sm">Über mich</a>
-        <a href="#projects">Projekte</a>
-        <a href="#homelab" class="hide-sm">Homelab</a>
-        <a href="#contact">Kontakt</a>
-        <button class="theme-btn" id="themeBtn" aria-label="Farbschema wechseln">◐</button>
+  <!-- ============ ANMELDUNG ============ -->
+  <div class="login" id="loginView" hidden>
+    <div class="box">
+      <div class="terminal">
+        <div class="terminal-bar"><i></i><i></i><i></i><span class="terminal-title mono">konsole — cbryr.de</span></div>
+        <div class="body">
+          <p class="mono"><span class="t-g">cbryr.de</span>:~$ ssh konsole</p>
+          <label class="f" for="tokenIn">GitHub-Token</label>
+          <input class="t" id="tokenIn" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…" />
+          <label class="check"><input type="checkbox" id="rememberIn" /> Auf diesem Gerät angemeldet bleiben</label>
+          <button class="btn primary" id="loginBtn">Anmelden</button>
+          <div class="err" id="loginErr"></div>
+          <details>
+            <summary>Repository ändern</summary>
+            <div style="margin-top:10px">
+              <label class="f" for="repoLoginIn">Repository (Benutzer/Name)</label>
+              <input class="t" id="repoLoginIn" spellcheck="false" />
+            </div>
+          </details>
+        </div>
       </div>
     </div>
-  </nav>
+  </div>
 
-  <!-- ============ HERO ============ -->
-  <header class="hero">
-    <div class="wrap hero-grid">
-      <div>
-      <div class="prompt mono">~ $ whoami <span class="cursor"></span></div>
-      <h1 data-c="hero.titel">Hi, ich bin Collin.</h1>
-      <p data-c="hero.text">Azubi zum Fachinformatiker für Systemintegration. Ich baue Dinge, die ich selbst brauche: Server im eigenen Homelab, kleine Web-Apps und Hardware-Projekte.</p>
-      <div class="hero-actions">
-        <a href="#projects" class="btn primary">Projekte ansehen</a>
-        <a href="https://github.com/collin-ncs" class="btn" target="_blank" rel="noopener">GitHub</a>
+  <!-- ============ KONSOLE ============ -->
+  <div id="appView" hidden>
+    <header>
+      <div class="wrap">
+        <a class="logo mono" href="./">cbryr<span>.</span>de <em class="hide-sm">/ konsole</em></a>
+        <nav class="tabs" id="tabs">
+          <button data-tab="overview" class="active">Übersicht</button>
+          <button data-tab="editor">Texte</button>
+          <button data-tab="settings">Einstellungen</button>
+        </nav>
+        <div class="spacer"></div>
+        <a class="icon-btn link-btn hide-sm" id="openSite" target="_blank" rel="noopener">Seite öffnen ↗</a>
+        <button class="icon-btn" id="logoutBtn">Abmelden</button>
       </div>
+    </header>
+
+    <main class="wrap">
+
+      <!-- ÜBERSICHT -->
+      <section id="tab-overview">
+        <h1>Übersicht</h1>
+        <p class="sub" id="overviewSub">Status deiner Website und Besucher der letzten 30 Tage.</p>
+
+        <div class="grid cols-4">
+          <div class="card"><div class="k"><span class="dot" id="onlineDot"></span>Website</div><div class="v" id="onlineV">…</div><div class="s" id="onlineS">&nbsp;</div></div>
+          <div class="card"><div class="k"><span class="dot" id="buildDot"></span>Letzte Veröffentlichung</div><div class="v" id="buildV">…</div><div class="s" id="buildS">&nbsp;</div></div>
+          <div class="card"><div class="k">Besucher heute</div><div class="v" id="visToday">–</div><div class="s" id="visTodayS">&nbsp;</div></div>
+          <div class="card"><div class="k">Besucher 7 / 30 Tage</div><div class="v" id="vis7">–</div><div class="s" id="vis30">&nbsp;</div></div>
+        </div>
+
+        <div class="section card">
+          <h2>Besucher pro Tag</h2>
+          <div id="chartBox"><p class="empty">Wird geladen …</p></div>
+          <div class="chart-tip" id="chartTip"></div>
+        </div>
+
+        <div class="section grid cols-3">
+          <div class="card"><h2>Meistbesuchte Seiten</h2><ul class="rank" id="rankPages"><li class="empty">–</li></ul></div>
+          <div class="card"><h2>Woher Besucher kommen</h2><ul class="rank" id="rankRefs"><li class="empty">–</li></ul></div>
+          <div class="card"><h2>Länder</h2><ul class="rank" id="rankLoc"><li class="empty">–</li></ul></div>
+          <div class="card"><h2>Browser</h2><ul class="rank" id="rankBrowsers"><li class="empty">–</li></ul></div>
+          <div class="card"><h2>Betriebssysteme</h2><ul class="rank" id="rankSystems"><li class="empty">–</li></ul></div>
+          <div class="card"><h2>Bildschirmgrößen</h2><ul class="rank" id="rankSizes"><li class="empty">–</li></ul></div>
+        </div>
+
+        <div class="section card">
+          <h2>Letzte Änderungen</h2>
+          <ul class="commits" id="commitList"><li class="empty">Wird geladen …</li></ul>
+        </div>
+
+        <div class="section" id="gcNotice" hidden></div>
+      </section>
+
+      <!-- TEXTE -->
+      <section id="tab-editor" hidden>
+        <h1>Texte bearbeiten</h1>
+        <p class="sub">Änderungen werden mit „Veröffentlichen“ gespeichert und sind nach etwa einer Minute auf der Website.</p>
+        <div id="editorForm"><p class="empty">Wird geladen …</p></div>
+        <div style="height:70px"></div>
+      </section>
+
+      <!-- EINSTELLUNGEN -->
+      <section id="tab-settings" hidden>
+        <h1>Einstellungen</h1>
+        <p class="sub">Diese Einstellungen werden nur in diesem Browser gespeichert.</p>
+        <div class="grid cols-2">
+          <fieldset>
+            <legend>Website</legend>
+            <div class="field"><label class="f" for="setRepo">GitHub-Repository</label><input class="t mono" id="setRepo" spellcheck="false" /><div class="hint">Format: Benutzer/Repo-Name</div></div>
+            <div class="field"><label class="f" for="setSite">Adresse der Website</label><input class="t mono" id="setSite" spellcheck="false" /></div>
+          </fieldset>
+          <fieldset>
+            <legend>Besucherzahlen (GoatCounter)</legend>
+            <div class="field"><label class="f" for="setGcCode">GoatCounter-Code</label><input class="t mono" id="setGcCode" spellcheck="false" /><div class="hint">Der Teil vor <span class="mono">.goatcounter.com</span></div></div>
+            <div class="field"><label class="f" for="setGcKey">GoatCounter-API-Schlüssel</label><input class="t mono" id="setGcKey" type="password" autocomplete="off" spellcheck="false" /><div class="hint">Erstellen unter: GoatCounter → Benutzername oben rechts → API, nur Recht „Read statistics“</div></div>
+          </fieldset>
+        </div>
+        <div class="card" style="margin-bottom:16px">
+          <label class="switch"><input type="checkbox" id="skipGc" /> Meine eigenen Besuche nicht zählen</label>
+          <div class="hint" style="margin-left:28px">Gilt für diesen Browser. Funktioniert, wenn die Konsole unter derselben Adresse wie die Website läuft (cbryr.de/admin/).</div>
+        </div>
+        <button class="btn primary" id="saveSettings">Einstellungen speichern</button>
+      </section>
+    </main>
+
+    <!-- Speicherleiste für den Text-Editor -->
+    <div class="savebar" id="saveBar" hidden>
+      <div class="wrap">
+        <span class="pill mid" id="dirtyPill">Keine Änderungen</span>
+        <input class="t msg-in" id="commitMsg" placeholder="Kurz beschreiben, was du geändert hast (optional)" />
+        <button class="btn" id="discardBtn">Verwerfen</button>
+        <button class="btn primary" id="publishBtn" disabled>Veröffentlichen</button>
       </div>
-      <!-- Foto: Datei "profil.jpg" in denselben Ordner wie diese index.html legen -->
-      <img src="profil.jpg" alt="Foto von Collin" class="avatar" onerror="this.remove()" />
     </div>
-  </header>
-
-  <main>
-    <!-- ============ ÜBER MICH ============ -->
-    <section id="about" class="reveal">
-      <div class="wrap about">
-        <div>
-          <h2 data-c="ueber.titel">Wer ich bin</h2>
-          <p class="lead" data-c="ueber.absatz1">Seit September 2026 mache ich meine Ausbildung als Fachinformatiker für Systemintegration. Mein Interesse an IT hat aber schon viel früher angefangen, mit dem Wunsch zu verstehen, wie Systeme hinter den Kulissen funktionieren.</p>
-          <p class="lead" data-c="ueber.absatz2">Am liebsten lerne ich, indem ich baue. Zuhause betreibe ich einen eigenen Proxmox-Server, auf dem meine Fotos, Dokumente und mein Smart Home laufen.</p>
-        </div>
-        <dl class="facts">
-          <dt>Ausbildung</dt>
-          <dd data-c="ueber.ausbildung">Fachinformatiker Systemintegration · 1. Lehrjahr</dd>
-          <dt>Standort</dt>
-          <dd data-c="ueber.standort">Thüringen</dd>
-          <dt>Gerade dabei</dt>
-          <dd data-c="ueber.gerade_dabei">Nowplay & Homelab-Ausbau</dd>
-          <dt>Werkzeuge</dt>
-          <dd data-c="ueber.werkzeuge">Proxmox, Linux, Home Assistant, Bambu Lab A1 Mini</dd>
-        </dl>
-      </div>
-    </section>
-
-    <!-- ============ WAS ICH MACHE ============ -->
-    <section class="reveal">
-      <div class="wrap">
-        <h2 data-c="skills.titel">Womit ich arbeite</h2>
-        <div class="skills" id="skillList">
-          <div class="skill">
-            <h3>Server & Self-Hosting</h3>
-            <div class="tags"><span class="tag">Proxmox</span><span class="tag">LXC</span><span class="tag">Debian</span><span class="tag">CasaOS</span><span class="tag">Docker</span></div>
-          </div>
-          <div class="skill">
-            <h3>Smart Home</h3>
-            <div class="tags"><span class="tag">Home Assistant</span><span class="tag">IR-Steuerung</span><span class="tag">Automationen</span></div>
-          </div>
-          <div class="skill">
-            <h3>Entwicklung</h3>
-            <div class="tags"><span class="tag">HTML/CSS/JS</span><span class="tag">Web-Apps</span><span class="tag">Swift</span><span class="tag">Git</span></div>
-          </div>
-          <div class="skill">
-            <h3>Hardware & Maker</h3>
-            <div class="tags"><span class="tag">3D-Druck</span><span class="tag">Upcycling</span></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ PROJEKTE ============ -->
-    <section id="projects" class="reveal">
-      <div class="wrap">
-        <h2 data-c="projekte.titel">Woran ich baue</h2>
-        <div class="projects" id="projectList">
-
-          <article class="project">
-            <div class="project-head">
-              <h3>Nowplay</h3>
-              <span class="status wip">In Entwicklung</span>
-            </div>
-            <p>Ein Spotify-Display für den Schreibtisch: Eine Web-App macht aus einem alten Galaxy S10 einen Now-Playing-Bildschirm, inspiriert vom Spotify Car Thing. Open Source unter MIT-Lizenz.</p>
-            <div class="tags"><span class="tag">Web-App</span><span class="tag">Spotify API</span><span class="tag">Upcycling</span></div>
-            <a href="https://github.com/collin-ncs/nowplay" class="more" target="_blank" rel="noopener">Zum Repo →</a>
-          </article>
-
-          <article class="project">
-            <div class="project-head">
-              <h3>Kerbe</h3>
-              <span class="status idea">Idee</span>
-            </div>
-            <p>Mein MacBook Pro M1 hat keine Notch, also baue ich mir eine. Eine macOS-App, die oben am Bildschirm eine interaktive Notch mit nützlichen Infos einblendet.</p>
-            <div class="tags"><span class="tag">macOS</span><span class="tag">Swift</span></div>
-          </article>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ HOMELAB ============ -->
-    <section id="homelab" class="reveal">
-      <div class="wrap">
-        <h2 data-c="homelab.titel">Homelab</h2>
-        <p class="lead" data-c="homelab.text">Mein Spielplatz und meine Lernumgebung. Alles läuft selbst gehostet auf Proxmox, statt in der Cloud fremder Anbieter.</p>
-        <div class="terminal mono">
-          <div class="terminal-bar"><i></i><i></i><i></i><span class="terminal-title">root@pve: ~</span></div>
-<pre id="terminalOut"><span class="t-g">root@pve</span>:~# pct list
-<span class="t-m">STATUS    NAME            BESCHREIBUNG</span>
-<span class="t-g">running</span>   immich          Foto-Cloud statt Google Photos
-<span class="t-g">running</span>   paperless-ngx   Dokumentenarchiv mit OCR
-<span class="t-g">running</span>   homeassistant   Smart Home inkl. IR-Steuerung
-<span class="t-g">running</span>   jellyfin        Medienserver
-<span class="t-g">running</span>   casaos          Speicher und Docker-Apps
-<span class="t-g">running</span>   unifi-os        Netzwerkverwaltung
-<span class="t-g">running</span>   beszel          Monitoring
-
-<span class="t-g">root@pve</span>:~# <span class="t-cursor"></span></pre>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ KONTAKT ============ -->
-    <section id="contact" class="reveal contact">
-      <div class="wrap">
-        <h2 data-c="kontakt.titel">Lass uns schreiben</h2>
-        <p class="lead" data-c="kontakt.text">Fragen zu einem Projekt, Ideen oder einfach Lust auf Austausch über Homelabs? Melde dich gern.</p>
-        <div class="hero-actions">
-          <a href="mailto:mail@cbryr.de" class="btn primary">E-Mail schreiben</a>
-          <a href="https://github.com/collin-ncs" class="btn" target="_blank" rel="noopener">GitHub</a>
-          <button type="button" class="btn discord-btn" id="discordBtn" data-user="collin.ncs" title="Discord-Namen kopieren">
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M20.3 4.4A19.6 19.6 0 0 0 15.4 3l-.6 1.3a18 18 0 0 0-5.6 0L8.6 3a19.5 19.5 0 0 0-4.9 1.5C.6 9.1-.3 13.6.1 18.1a19.8 19.8 0 0 0 6 3l1.3-2a12.8 12.8 0 0 1-2-1l.5-.4a14 14 0 0 0 12.2 0l.5.4c-.6.4-1.3.7-2 1l1.3 2a19.7 19.7 0 0 0 6-3c.5-5.2-.8-9.7-3.6-13.7ZM8 15.3c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4Zm8 0c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4Z"/></svg>
-            <span class="discord-label">collin.ncs</span>
-          </button>
-        </div>
-        <p class="copy-hint" id="discordHint" aria-live="polite"></p>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="wrap mono">© <span id="year"></span> Collin · selbst gebaut, gehostet auf GitHub Pages</div>
-  </footer>
+  </div>
 
   <script>
-    // Jahr im Footer
-    document.getElementById("year").textContent = new Date().getFullYear();
+  (() => {
+    "use strict";
 
-    // Hell/Dunkel-Umschalter (merkt sich die Wahl)
-    const root = document.documentElement;
-    const btn = document.getElementById("themeBtn");
-    try {
-      const saved = localStorage.getItem("theme");
-      if (saved) root.dataset.theme = saved;
-    } catch (e) {}
-    btn.addEventListener("click", () => {
-      const isDark = root.dataset.theme
-        ? root.dataset.theme === "dark"
-        : matchMedia("(prefers-color-scheme: dark)").matches;
-      root.dataset.theme = isDark ? "light" : "dark";
-      try { localStorage.setItem("theme", root.dataset.theme); } catch (e) {}
+    /* ============ GRUNDEINSTELLUNGEN ============ */
+    const DEFAULTS = {
+      repo: "collin-ncs/cbryr.de",
+      site: "https://cbryr.de",
+      gcCode: "cbryr",
+      file: "content.json",
+    };
+
+    // Beschriftungen für die Felder im Editor (Schlüssel aus content.json → Anzeige)
+    const LABELS = {
+      hero: "Startbereich", ueber: "Über mich", skills: "Womit ich arbeite", projekte: "Projekte",
+      homelab: "Homelab", kontakt: "Kontakt",
+      titel: "Überschrift", text: "Text", absatz1: "Absatz 1", absatz2: "Absatz 2",
+      ausbildung: "Ausbildung", standort: "Standort", gerade_dabei: "Gerade dabei", werkzeuge: "Werkzeuge",
+      bereiche: "Bereiche", liste: "Projekte", dienste: "Dienste im Terminal",
+      name: "Name", status: "Status-Text", beschreibung: "Beschreibung", tags: "Schlagwörter",
+    };
+    const LONG_KEYS = ["text", "absatz1", "absatz2", "beschreibung"];
+
+    /* ============ SPEICHER ============ */
+    const store = {
+      get(k) { try { return localStorage.getItem(k) ?? sessionStorage.getItem(k); } catch { return null; } },
+      set(k, v, persist = true) {
+        try { (persist ? localStorage : sessionStorage).setItem(k, v); } catch {}
+      },
+      del(k) { try { localStorage.removeItem(k); sessionStorage.removeItem(k); } catch {} },
+    };
+    const cfg = () => ({
+      repo: store.get("k_repo") || DEFAULTS.repo,
+      site: (store.get("k_site") || DEFAULTS.site).replace(/\/+$/, ""),
+      gcCode: store.get("k_gc_code") ?? DEFAULTS.gcCode,
+      gcKey: store.get("k_gc_key") || "",
     });
+    let token = store.get("k_token");
 
-    // ============ DISCORD-NAMEN KOPIEREN ============
-    // Discord hat keine öffentlichen Profil-Links per Name, daher wird der Name kopiert.
-    (() => {
-      const b = document.getElementById("discordBtn");
-      const hint = document.getElementById("discordHint");
-      const label = b.querySelector(".discord-label");
-      const user = b.dataset.user;
-      let timer;
-      b.addEventListener("click", async () => {
-        let ok = false;
-        try { await navigator.clipboard.writeText(user); ok = true; } catch {
-          const t = document.createElement("textarea");
-          t.value = user; t.style.position = "fixed"; t.style.opacity = "0";
-          document.body.appendChild(t); t.select();
-          try { ok = document.execCommand("copy"); } catch {}
-          t.remove();
-        }
-        label.textContent = ok ? "Kopiert ✓" : user;
-        hint.textContent = ok ? "Discord-Name kopiert. In Discord unter „Freund hinzufügen“ einfügen." : "Mein Discord-Name: " + user;
-        clearTimeout(timer);
-        timer = setTimeout(() => { label.textContent = user; hint.textContent = ""; }, 3500);
-      });
-    })();
-
-    // ============ TEXTE AUS content.json ============
-    // Die Konsole unter /admin/ bearbeitet diese Datei. Fällt das Laden aus,
-    // bleiben einfach die Texte stehen, die hier im HTML stehen.
-    function get(obj, path) { return path.split(".").reduce((o, k) => (o == null ? o : o[k]), obj); }
+    /* ============ HILFSFUNKTIONEN ============ */
+    const $ = (id) => document.getElementById(id);
     function el(tag, cls, text) {
       const e = document.createElement(tag);
       if (cls) e.className = cls;
       if (text != null) e.textContent = text;
       return e;
     }
-    // ============ ICONS FÜR SCHLAGWÖRTER ============
-    // Marken-Logos aus Simple Icons (simpleicons.org, CC0), direkt eingebettet.
-    // Neue Zuordnung: unten in TAG_ICONS "schlagwort klein geschrieben": "slug" ergänzen.
-    const BRAND = {"proxmox":{"p":"M4.928 1.825c-1.09.553-1.09.64-.07 1.78 5.655 6.295 7.004 7.782 7.107 7.782.139.017 7.971-8.542 8.058-8.801.034-.07-.208-.312-.519-.536-.415-.312-.864-.433-1.712-.467-1.59-.104-2.144.242-4.115 2.455-.899 1.003-1.66 1.833-1.66 1.833-.017 0-.76-.813-1.642-1.798S8.473 2.1 8.127 1.91c-.796-.45-2.421-.484-3.2-.086zM1.297 4.367C.45 4.695 0 5.007 0 5.248c0 .121 1.331 1.678 2.94 3.459 1.625 1.78 2.939 3.268 2.939 3.302 0 .035-1.331 1.522-2.94 3.303C1.314 17.11.017 18.683.035 18.822c.086.467 1.504 1.055 2.541 1.055 1.678-.018 2.058-.312 5.603-4.202 1.78-1.954 3.233-3.614 3.233-3.666 0-.069-1.435-1.694-3.199-3.63-2.3-2.508-3.423-3.632-3.96-3.874-.812-.398-2.126-.467-2.956-.138zm18.467.12c-.502.26-1.764 1.505-3.943 3.891-1.763 1.937-3.199 3.562-3.199 3.631 0 .07 1.453 1.712 3.234 3.666 3.544 3.89 3.925 4.184 5.602 4.202 1.038 0 2.455-.588 2.542-1.055.017-.156-1.28-1.712-2.905-3.493-1.608-1.78-2.94-3.285-2.94-3.32 0-.034 1.332-1.539 2.94-3.32C22.72 6.91 24.017 5.352 24 5.214c-.087-.45-1.366-.968-2.473-1.038-.795-.034-1.21.035-1.763.312zM7.954 16.973c-2.144 2.369-3.908 4.374-3.943 4.46-.034.07.208.312.52.537.414.311.864.432 1.711.467 1.574.103 2.161-.26 4.15-2.508.864-.968 1.608-1.78 1.625-1.78s.761.812 1.643 1.798c2.023 2.248 2.559 2.576 4.132 2.49.848-.035 1.297-.156 1.712-.467.311-.225.553-.467.519-.536-.087-.26-7.92-8.819-8.058-8.801-.069 0-1.867 1.954-4.011 4.34z","c":"#E57000"},"linuxcontainers":{"p":"M10.15 8.98l1.647.951-5.756 3.345.005-1.911L10.15 8.98zm1.723-1.001l-1.553.902 1.548.893.005-1.795zM6.028 5.33L6.025 6.4l.543.316 3.602 2.079 1.632-.948-2.19-1.279-3.231-1.887-.351-.203-.002.852zm.072-.983l.359.209 6.321 3.65 5.258 3.037 5.858-3.405L11.956.943 6.1 4.347zm6.002 12.602l-.005 1.924 5.858-3.404.005-1.924-5.858 3.404zm-.077-9.009l-.005 1.922 5.94 3.428.005-1.92-5.94-3.43zm-10.13.945l4.075 2.352 4.031-2.342-4.075-2.353-4.031 2.343zM24 7.982l-5.858 3.404-.015 3.982 5.858-3.404L24 7.982zm-12.048 10.04l.003-1.073L7.6 14.436l-1.565-.903v.001l-.939-.542L.015 10.06.01 11.979l11.94 6.895.002-.852zm5.935-4.605l-5.922-3.411-5.853 3.401 5.917 3.414 5.858-3.404zm6.072-1.238l-11.862 6.864-.01 4.013 11.863-6.894.009-3.983zM11.944 21.27l.005-2.227L.01 12.148 0 16.162l11.94 6.895.004-1.787zM.021 9.802L1.6 8.885.025 7.976.021 9.802zm5.832-3.39l.024-1.636.001-.296L.099 7.848l1.647.951 4.107-2.387zm.041 4.951L1.749 8.97l-.46.267-1.195.695 5.795 3.345.005-1.914z","c":""},"debian":{"p":"M13.88 12.685c-.4 0 .08.2.601.28.14-.1.27-.22.39-.33a3.001 3.001 0 01-.99.05m2.14-.53c.23-.33.4-.69.47-1.06-.06.27-.2.5-.33.73-.75.47-.07-.27 0-.56-.8 1.01-.11.6-.14.89m.781-2.05c.05-.721-.14-.501-.2-.221.07.04.13.5.2.22M12.38.31c.2.04.45.07.42.12.23-.05.28-.1-.43-.12m.43.12l-.15.03.14-.01V.43m6.633 9.944c.02.64-.2.95-.38 1.5l-.35.181c-.28.54.03.35-.17.78-.44.39-1.34 1.22-1.62 1.301-.201 0 .14-.25.19-.34-.591.4-.481.6-1.371.85l-.03-.06c-2.221 1.04-5.303-1.02-5.253-3.842-.03.17-.07.13-.12.2a3.551 3.552 0 012.001-3.501 3.361 3.362 0 013.732.48 3.341 3.342 0 00-2.721-1.3c-1.18.01-2.281.76-2.651 1.57-.6.38-.67 1.47-.93 1.661-.361 2.601.66 3.722 2.38 5.042.27.19.08.21.12.35a4.702 4.702 0 01-1.53-1.16c.23.33.47.66.8.91-.55-.18-1.27-1.3-1.48-1.35.93 1.66 3.78 2.921 5.261 2.3a6.203 6.203 0 01-2.33-.28c-.33-.16-.77-.51-.7-.57a5.802 5.803 0 005.902-.84c.44-.35.93-.94 1.07-.95-.2.32.04.16-.12.44.44-.72-.2-.3.46-1.24l.24.33c-.09-.6.74-1.321.66-2.262.19-.3.2.3 0 .97.29-.74.08-.85.15-1.46.08.2.18.42.23.63-.18-.7.2-1.2.28-1.6-.09-.05-.28.3-.32-.53 0-.37.1-.2.14-.28-.08-.05-.26-.32-.38-.861.08-.13.22.33.34.34-.08-.42-.2-.75-.2-1.08-.34-.68-.12.1-.4-.3-.34-1.091.3-.25.34-.74.54.77.84 1.96.981 2.46-.1-.6-.28-1.2-.49-1.76.16.07-.26-1.241.21-.37A7.823 7.824 0 0017.702 1.6c.18.17.42.39.33.42-.75-.45-.62-.48-.73-.67-.61-.25-.65.02-1.06 0C15.082.73 14.862.8 13.8.4l.05.23c-.77-.25-.9.1-1.73 0-.05-.04.27-.14.53-.18-.741.1-.701-.14-1.431.03.17-.13.36-.21.55-.32-.6.04-1.44.35-1.18.07C9.6.68 7.847 1.3 6.867 2.22L6.838 2c-.45.54-1.96 1.611-2.08 2.311l-.131.03c-.23.4-.38.85-.57 1.261-.3.52-.45.2-.4.28-.6 1.22-.9 2.251-1.16 3.102.18.27 0 1.65.07 2.76-.3 5.463 3.84 10.776 8.363 12.006.67.23 1.65.23 2.49.25-.99-.28-1.12-.15-2.08-.49-.7-.32-.85-.7-1.34-1.13l.2.35c-.971-.34-.57-.42-1.361-.67l.21-.27c-.31-.03-.83-.53-.97-.81l-.34.01c-.41-.501-.63-.871-.61-1.161l-.111.2c-.13-.21-1.52-1.901-.8-1.511-.13-.12-.31-.2-.5-.55l.14-.17c-.35-.44-.64-1.02-.62-1.2.2.24.32.3.45.33-.88-2.172-.93-.12-1.601-2.202l.15-.02c-.1-.16-.18-.34-.26-.51l.06-.6c-.63-.74-.18-3.102-.09-4.402.07-.54.53-1.1.88-1.981l-.21-.04c.4-.71 2.341-2.872 3.241-2.761.43-.55-.09 0-.18-.14.96-.991 1.26-.7 1.901-.88.7-.401-.6.16-.27-.151 1.2-.3.85-.7 2.421-.85.16.1-.39.14-.52.26 1-.49 3.151-.37 4.562.27 1.63.77 3.461 3.011 3.531 5.132l.08.02c-.04.85.13 1.821-.17 2.711l.2-.42M9.54 13.236l-.05.28c.26.35.47.73.8 1.01-.24-.47-.42-.66-.75-1.3m.62-.02c-.14-.15-.22-.34-.31-.52.08.32.26.6.43.88l-.12-.36m10.945-2.382l-.07.15c-.1.76-.34 1.511-.69 2.212.4-.73.65-1.541.75-2.362M12.45.12c.27-.1.66-.05.95-.12-.37.03-.74.05-1.1.1l.15.02M3.006 5.142c.07.57-.43.8.11.42.3-.66-.11-.18-.1-.42m-.64 2.661c.12-.39.15-.62.2-.84-.35.44-.17.53-.2.83","c":"#A81D33"},"docker":{"p":"M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.184-.186h-2.12a.186.186 0 00-.186.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 00-.75.748 11.376 11.376 0 00.692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 003.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288Z","c":"#2496ED"},"homeassistant":{"p":"M22.939 10.627 13.061.749a1.505 1.505 0 0 0-2.121 0l-9.879 9.878C.478 11.21 0 12.363 0 13.187v9c0 .826.675 1.5 1.5 1.5h9.227l-4.063-4.062a2.034 2.034 0 0 1-.664.113c-1.13 0-2.05-.92-2.05-2.05s.92-2.05 2.05-2.05 2.05.92 2.05 2.05c0 .233-.041.456-.113.665l3.163 3.163V9.928a2.05 2.05 0 0 1-1.15-1.84c0-1.13.92-2.05 2.05-2.05s2.05.92 2.05 2.05a2.05 2.05 0 0 1-1.15 1.84v8.127l3.146-3.146A2.051 2.051 0 0 1 18 12.239c1.13 0 2.05.92 2.05 2.05s-.92 2.05-2.05 2.05c-.25 0-.488-.047-.709-.13L12.9 20.602v3.088h9.6c.825 0 1.5-.675 1.5-1.5v-9c0-.825-.477-1.977-1.061-2.561z","c":"#18BCF2"},"html5":{"p":"M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.23-2.622L5.412 4.41l.698 8.01h9.126l-.326 3.426-2.91.804-2.955-.81-.188-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z","c":"#E34F26"},"swift":{"p":"M7.508 0c-.287 0-.573 0-.86.002-.241.002-.483.003-.724.01-.132.003-.263.009-.395.015A9.154 9.154 0 0 0 4.348.15 5.492 5.492 0 0 0 2.85.645 5.04 5.04 0 0 0 .645 2.848c-.245.48-.4.972-.495 1.5-.093.52-.122 1.05-.136 1.576a35.2 35.2 0 0 0-.012.724C0 6.935 0 7.221 0 7.508v8.984c0 .287 0 .575.002.862.002.24.005.481.012.722.014.526.043 1.057.136 1.576.095.528.25 1.02.495 1.5a5.03 5.03 0 0 0 2.205 2.203c.48.244.97.4 1.498.495.52.093 1.05.124 1.576.138.241.007.483.009.724.01.287.002.573.002.86.002h8.984c.287 0 .573 0 .86-.002.241-.001.483-.003.724-.01a10.523 10.523 0 0 0 1.578-.138 5.322 5.322 0 0 0 1.498-.495 5.035 5.035 0 0 0 2.203-2.203c.245-.48.4-.972.495-1.5.093-.52.124-1.05.138-1.576.007-.241.009-.481.01-.722.002-.287.002-.575.002-.862V7.508c0-.287 0-.573-.002-.86a33.662 33.662 0 0 0-.01-.724 10.5 10.5 0 0 0-.138-1.576 5.328 5.328 0 0 0-.495-1.5A5.039 5.039 0 0 0 21.152.645 5.32 5.32 0 0 0 19.654.15a10.493 10.493 0 0 0-1.578-.138 34.98 34.98 0 0 0-.722-.01C17.067 0 16.779 0 16.492 0H7.508zm6.035 3.41c4.114 2.47 6.545 7.162 5.549 11.131-.024.093-.05.181-.076.272l.002.001c2.062 2.538 1.5 5.258 1.236 4.745-1.072-2.086-3.066-1.568-4.088-1.043a6.803 6.803 0 0 1-.281.158l-.02.012-.002.002c-2.115 1.123-4.957 1.205-7.812-.022a12.568 12.568 0 0 1-5.64-4.838c.649.48 1.35.902 2.097 1.252 3.019 1.414 6.051 1.311 8.197-.002C9.651 12.73 7.101 9.67 5.146 7.191a10.628 10.628 0 0 1-1.005-1.384c2.34 2.142 6.038 4.83 7.365 5.576C8.69 8.408 6.208 4.743 6.324 4.86c4.436 4.47 8.528 6.996 8.528 6.996.154.085.27.154.36.213.085-.215.16-.437.224-.668.708-2.588-.09-5.548-1.893-7.992z","c":"#F05138"},"git":{"p":"M13.09 23.549a1.54 1.54 0 0 1-2.18 0L.451 13.089a1.54 1.54 0 0 1 0-2.179l7.191-7.19 2.733 2.733a1.85 1.85 0 0 0 .964 2.326v6.66a1.849 1.849 0 1 0 1.54 0V8.957l2.508 2.508a1.85 1.85 0 1 0 1.09-1.09l-2.634-2.634a1.85 1.85 0 0 0-2.378-2.377L8.73 2.63 10.91.451a1.54 1.54 0 0 1 2.179 0l10.459 10.46a1.54 1.54 0 0 1 0 2.179z","c":"#F03C2E"},"bambulab":{"p":"M12.662 24V8.959l8.535 3.369V24zm-9.859-.003v-7.521l8.534-3.371-.001 10.892zM2.803 0h8.533l.001 11.672-8.534 3.369zm9.859 0h8.535v10.892l-8.535-3.371z","c":"#00AE42"},"spotify":{"p":"M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z","c":"#1ED760"},"apple":{"p":"M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701","c":""}};
-    const GENERIC = {"box": "<path d=\"M21 8 12 3 3 8v8l9 5 9-5V8Z\"/><path d=\"M3 8l9 5 9-5M12 13v8\"/>", "remote": "<rect x=\"7\" y=\"2\" width=\"10\" height=\"20\" rx=\"3\"/><circle cx=\"12\" cy=\"7\" r=\"1.6\"/><path d=\"M10 12h4M10 15.5h4M10 19h4\"/>", "zap": "<path d=\"M13 2 4 14h7l-1 8 9-12h-7l1-8Z\"/>", "globe": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3Z\"/>", "recycle": "<path d=\"M7 19H4.8a1.8 1.8 0 0 1-1.6-2.7l1.5-2.6M11 19h8.2a1.8 1.8 0 0 0 1.6-2.7l-1.3-2.2M14 16l-3 3 3 3M8.3 13.4 7.2 9.1 3 10.2M16.6 9.6 15.1 5.4l4.2-1.1M9.4 5.6l1.1-1.9a1.8 1.8 0 0 1 3.1 0l3 5.3\"/>"};
-    const TAG_ICONS = {"proxmox": "proxmox", "lxc": "linuxcontainers", "debian": "debian", "docker": "docker", "home assistant": "homeassistant", "html/css/js": "html5", "swift": "swift", "git": "git", "3d-druck": "bambulab", "spotify api": "spotify", "spotify": "spotify", "macos": "apple", "casaos": "g:box", "ir-steuerung": "g:remote", "automationen": "g:zap", "web-apps": "g:globe", "web-app": "g:globe", "upcycling": "g:recycle"};
-    function iconFor(tag) {
-      const key = TAG_ICONS[String(tag).trim().toLowerCase()];
-      if (!key) return null;
-      let svg, color = "";
-      if (key.startsWith("g:")) {
-        svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + GENERIC[key.slice(2)] + "</svg>";
-      } else {
-        const b = BRAND[key]; if (!b) return null;
-        svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="' + b.p + '"/></svg>';
-        color = b.c;
-      }
-      const i = document.createElement("i");
-      i.className = "ti";
-      i.setAttribute("aria-hidden", "true");
-      i.style.setProperty("--i", 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '")');
-      if (color) i.style.setProperty("--brand", color);
-      return i;
+    const nf = new Intl.NumberFormat("de-DE");
+    const rtf = new Intl.RelativeTimeFormat("de", { numeric: "auto" });
+    function ago(date) {
+      const s = (new Date(date) - Date.now()) / 1000;
+      const units = [["year", 31536000], ["month", 2592000], ["week", 604800], ["day", 86400], ["hour", 3600], ["minute", 60]];
+      for (const [u, sec] of units) if (Math.abs(s) >= sec) return rtf.format(Math.round(s / sec), u);
+      return "gerade eben";
     }
-    function tags(list) {
-      const box = el("div", "tags");
-      (list || []).forEach((t) => {
-        const span = el("span", "tag");
-        const ic = iconFor(t);
-        if (ic) span.appendChild(ic);
-        span.appendChild(document.createTextNode(t));
-        box.appendChild(span);
-      });
-      return box;
+    function toast(msg, ms = 2600) {
+      const t = el("div", "toast", msg);
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), ms);
     }
-    function applyContent(c) {
-      document.querySelectorAll("[data-c]").forEach((node) => {
-        const v = get(c, node.dataset.c);
-        if (typeof v === "string") node.textContent = v;
-      });
-      if (c.skills && Array.isArray(c.skills.bereiche)) {
-        const box = document.getElementById("skillList");
-        box.replaceChildren(...c.skills.bereiche.map((b) => {
-          const d = el("div", "skill");
-          d.append(el("h3", null, b.titel), tags(b.tags));
-          return d;
-        }));
-      }
-      if (c.projekte && Array.isArray(c.projekte.liste)) {
-        const box = document.getElementById("projectList");
-        box.replaceChildren(...c.projekte.liste.map((p) => {
-          const a = el("article", "project");
-          const head = el("div", "project-head");
-          head.append(el("h3", null, p.name), el("span", "status " + (p._typ || "wip"), p.status));
-          a.append(head, el("p", null, p.beschreibung), tags(p.tags));
-          if (p._link) {
-            const link = el("a", "more", "Zum Repo →");
-            link.href = p._link; link.target = "_blank"; link.rel = "noopener";
-            a.appendChild(link);
-          }
-          return a;
-        }));
-      }
-      if (c.homelab && Array.isArray(c.homelab.dienste)) {
-        const pre = document.getElementById("terminalOut");
-        const g = (t) => el("span", "t-g", t);
-        const parts = [g("root@pve"), ":~# pct list\n", el("span", "t-m", "STATUS    NAME            BESCHREIBUNG"), "\n"];
-        c.homelab.dienste.forEach((d) => {
-          parts.push(g("running"), "   " + String(d.name).padEnd(16) + d.beschreibung + "\n");
-        });
-        parts.push("\n", g("root@pve"), ":~# ", el("span", "t-cursor"));
-        pre.replaceChildren(...parts);
-      }
-    }
-    const showPage = () => root.classList.remove("c-wait");
-    const safety = setTimeout(showPage, 1200);
-    fetch("content.json?v=" + Date.now(), { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : Promise.reject()))
-      .then(applyContent)
-      .catch(() => {})
-      .finally(() => { clearTimeout(safety); showPage(); typeHeadline(); });
+    function setDot(id, state) { $(id).className = "dot " + (state || ""); }
 
-    // ============ ÜBERSCHRIFT TIPPEN ============
-    function typeHeadline() {
-      const h1 = document.querySelector("h1[data-c='hero.titel']");
-      const text = h1.textContent;
-      if (matchMedia("(prefers-reduced-motion: reduce)").matches || !text) return;
-      h1.setAttribute("aria-label", text);          // Screenreader lesen den ganzen Satz
-      h1.style.minHeight = h1.offsetHeight + "px";  // verhindert, dass die Seite beim Tippen springt
-      const out = document.createElement("span");
-      out.setAttribute("aria-hidden", "true");
-      const caret = document.createElement("span");
-      caret.className = "type-caret typing";
-      caret.setAttribute("aria-hidden", "true");
-      h1.replaceChildren(out, caret);
-      let i = 0;
-      const step = () => {
-        out.textContent = text.slice(0, ++i);
-        if (i < text.length) {
-          const ch = text[i - 1];
-          setTimeout(step, ch === "," || ch === "." ? 260 : 55 + Math.random() * 55);
-        } else {
-          caret.classList.remove("typing");
-          setTimeout(() => caret.classList.add("gone"), 2600);
-          setTimeout(() => { h1.textContent = text; h1.style.minHeight = ""; }, 3100);
-        }
+    // UTF-8-sicheres Base64 (für Umlaute)
+    function b64decode(b64) {
+      const bin = atob(b64.replace(/\s/g, ""));
+      return new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0)));
+    }
+    function b64encode(str) {
+      const bytes = new TextEncoder().encode(str);
+      let bin = "";
+      for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+      return btoa(bin);
+    }
+
+    /* ============ GITHUB ============ */
+    async function gh(path, opts = {}) {
+      const headers = {
+        Accept: "application/vnd.github+json",
+        Authorization: "Bearer " + token,
+        "X-GitHub-Api-Version": "2022-11-28",
       };
-      setTimeout(step, 350);
+      if (opts.body) headers["Content-Type"] = "application/json";
+      const r = await fetch("https://api.github.com" + path, { ...opts, headers, cache: "no-store" });
+      if (!r.ok) {
+        let msg = r.statusText;
+        try { msg = (await r.json()).message || msg; } catch {}
+        const e = new Error(msg); e.status = r.status; throw e;
+      }
+      return r.status === 204 ? null : r.json();
+    }
+    const repoPath = () => "/repos/" + cfg().repo;
+
+    /* ============ ANMELDUNG ============ */
+    function showLogin(msg) {
+      $("appView").hidden = true;
+      $("loginView").hidden = false;
+      $("repoLoginIn").value = cfg().repo;
+      $("loginErr").textContent = msg || "";
+      $("tokenIn").focus();
+    }
+    async function tryLogin() {
+      try {
+        const repo = await gh(repoPath());
+        if (!repo.permissions || !repo.permissions.push) {
+          throw Object.assign(new Error("Token hat keine Schreibrechte für dieses Repository."), { status: 403 });
+        }
+        return repo;
+      } catch (e) {
+        if (e.status === 401) throw new Error("Token ist ungültig oder abgelaufen.");
+        if (e.status === 404) throw new Error("Repository „" + cfg().repo + "“ nicht gefunden oder Token hat keinen Zugriff darauf.");
+        throw e;
+      }
+    }
+    $("loginBtn").addEventListener("click", async () => {
+      const t = $("tokenIn").value.trim();
+      const repo = $("repoLoginIn").value.trim();
+      if (!t) { $("loginErr").textContent = "Bitte Token eingeben."; return; }
+      if (repo) store.set("k_repo", repo);
+      token = t;
+      $("loginBtn").disabled = true; $("loginErr").textContent = "";
+      try {
+        await tryLogin();
+        store.del("k_token");
+        store.set("k_token", t, $("rememberIn").checked);
+        $("tokenIn").value = "";
+        startApp();
+      } catch (e) {
+        token = null;
+        $("loginErr").textContent = e.message;
+      } finally { $("loginBtn").disabled = false; }
+    });
+    $("tokenIn").addEventListener("keydown", (e) => { if (e.key === "Enter") $("loginBtn").click(); });
+    $("logoutBtn").addEventListener("click", () => {
+      if (dirty() && !confirm("Ungespeicherte Änderungen verwerfen und abmelden?")) return;
+      store.del("k_token"); token = null; original = null;
+      showLogin("Abgemeldet.");
+    });
+
+    /* ============ TABS ============ */
+    let currentTab = "overview";
+    function showTab(name) {
+      currentTab = name;
+      document.querySelectorAll("#tabs button").forEach((b) => b.classList.toggle("active", b.dataset.tab === name));
+      ["overview", "editor", "settings"].forEach((t) => ($("tab-" + t).hidden = t !== name));
+      $("saveBar").hidden = name !== "editor";
+      if (name === "editor" && !original) loadEditor();
+      if (name === "settings") fillSettings();
+    }
+    $("tabs").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) showTab(b.dataset.tab); });
+
+    /* ============ ÜBERSICHT: STATUS ============ */
+    async function loadStatus() {
+      const c = cfg();
+      $("openSite").href = c.site;
+
+      // Erreichbarkeit der Website
+      const t0 = performance.now();
+      try {
+        await fetch(c.site + "/?ping=" + Date.now(), { mode: "no-cors", cache: "no-store" });
+        const ms = Math.round(performance.now() - t0);
+        setDot("onlineDot", "ok"); $("onlineV").textContent = "Online"; $("onlineS").textContent = c.site.replace(/^https?:\/\//, "") + " · " + ms + " ms";
+      } catch {
+        setDot("onlineDot", "bad"); $("onlineV").textContent = "Offline"; $("onlineS").textContent = "Seite antwortet nicht";
+      }
+
+      // GitHub Pages
+      try {
+        const pages = await gh(repoPath() + "/pages");
+        const https = pages.https_enforced ? "HTTPS aktiv" : "HTTPS noch nicht erzwungen";
+        if (!pages.https_enforced) { setDot("onlineDot", "mid"); }
+        $("onlineS").textContent += " · " + https;
+      } catch {}
+      try {
+        const b = await gh(repoPath() + "/pages/builds/latest");
+        const map = { built: ["Live", "ok"], building: ["Wird gebaut …", "mid"], queued: ["In Warteschlange", "mid"], errored: ["Fehler", "bad"] };
+        const [label, st] = map[b.status] || [b.status, ""];
+        setDot("buildDot", st); $("buildV").textContent = label;
+        $("buildS").textContent = ago(b.updated_at || b.created_at) + (b.error && b.error.message ? " · " + b.error.message : "");
+      } catch (e) {
+        setDot("buildDot", "bad"); $("buildV").textContent = "Unbekannt";
+        $("buildS").textContent = e.status === 404 ? "GitHub Pages ist nicht aktiv" : "Token braucht das Recht „Pages: Read“";
+      }
+
+      // Letzte Änderungen
+      try {
+        const commits = await gh(repoPath() + "/commits?per_page=8");
+        const list = $("commitList");
+        list.replaceChildren(...commits.map((cm) => {
+          const li = el("li");
+          const a = el("a", "msg", cm.commit.message.split("\n")[0]);
+          a.href = cm.html_url; a.target = "_blank"; a.rel = "noopener"; a.style.color = "inherit"; a.style.textDecoration = "none";
+          li.append(el("code", "mono", cm.sha.slice(0, 7)), a, el("span", "when", ago(cm.commit.author.date)));
+          return li;
+        }));
+        if (!commits.length) list.replaceChildren(el("li", "empty", "Noch keine Änderungen."));
+      } catch { $("commitList").replaceChildren(el("li", "empty", "Konnte nicht geladen werden.")); }
     }
 
-    // Sektionen beim Scrollen einblenden
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("visible"); io.unobserve(e.target); } });
-    }, { threshold: 0.12 });
-    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+    /* ============ ÜBERSICHT: BESUCHER (GoatCounter) ============ */
+    function isoHour(d) { const x = new Date(d); x.setUTCMinutes(0, 0, 0); return x.toISOString().replace(/\.\d{3}Z$/, "Z"); }
+    async function gc(path, params = {}) {
+      const c = cfg();
+      const url = new URL("https://" + c.gcCode + ".goatcounter.com/api/v0" + path);
+      Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+      const r = await fetch(url, { headers: { Authorization: "Bearer " + c.gcKey }, cache: "no-store" });
+      if (!r.ok) { const e = new Error("GoatCounter " + r.status); e.status = r.status; throw e; }
+      return r.json();
+    }
+    function rankList(id, rows, nameFn = (r) => r.name) {
+      const ul = $(id);
+      const items = (rows || []).filter((r) => r.count > 0).slice(0, 6);
+      if (!items.length) { ul.replaceChildren(el("li", "empty", "Noch keine Daten")); return; }
+      const max = Math.max(...items.map((r) => r.count));
+      ul.replaceChildren(...items.map((r) => {
+        const li = el("li");
+        const bg = el("div", "bg"); bg.style.transform = "scaleX(" + (r.count / max) + ")";
+        li.append(bg, el("span", null, nameFn(r) || "(unbekannt)"), el("b", null, nf.format(r.count)));
+        return li;
+      }));
+    }
+    function drawChart(days) {
+      const box = $("chartBox");
+      if (!days.length) { box.replaceChildren(el("p", "empty", "Noch keine Daten")); return; }
+      const W = Math.max(300, Math.round(box.clientWidth || 900)), H = 180, pad = { l: 34, r: 8, t: 10, b: 22 };
+      const max = Math.max(1, ...days.map((d) => d.count));
+      const step = Math.pow(10, Math.floor(Math.log10(max)));
+      const top = Math.ceil(max / step) * step;
+      const bw = (W - pad.l - pad.r) / days.length;
+      const ns = "http://www.w3.org/2000/svg";
+      const svg = document.createElementNS(ns, "svg");
+      svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.setAttribute("class", "chart");
+      const mk = (tag, attrs, text) => { const n = document.createElementNS(ns, tag); Object.entries(attrs).forEach(([k, v]) => n.setAttribute(k, v)); if (text != null) n.textContent = text; svg.appendChild(n); return n; };
+      [0, 0.5, 1].forEach((f) => {
+        const y = pad.t + (H - pad.t - pad.b) * (1 - f);
+        mk("line", { x1: pad.l, x2: W - pad.r, y1: y, y2: y });
+        mk("text", { x: pad.l - 6, y: y + 3, "text-anchor": "end" }, nf.format(Math.round(top * f)));
+      });
+      const tip = $("chartTip");
+      const fmt = new Intl.DateTimeFormat("de-DE", { weekday: "short", day: "numeric", month: "short" });
+      days.forEach((d, i) => {
+        const h = (H - pad.t - pad.b) * (d.count / top);
+        const x = pad.l + i * bw + bw * 0.15;
+        const r = mk("rect", { class: "bar", x, y: H - pad.b - h, width: bw * 0.7, height: Math.max(h, d.count ? 2 : 0), rx: 2 });
+        const show = () => (tip.textContent = fmt.format(new Date(d.day)) + ": " + nf.format(d.count) + " Besucher");
+        r.addEventListener("mouseenter", show); r.addEventListener("click", show);
+        const every = W < 560 ? 7 : 5;
+        const last = days.length - 1;
+        if ((i % every === 0 && last - i >= every / 2) || i === last) {
+          mk("text", { x: x + bw * 0.35, y: H - 6, "text-anchor": "middle" }, new Date(d.day).toLocaleDateString("de-DE", { day: "numeric", month: "numeric" }));
+        }
+      });
+      box.replaceChildren(svg);
+      tip.textContent = "Tippe oder fahre über einen Balken für Details.";
+    }
+    function gcNotice(kind) {
+      const n = $("gcNotice"); n.hidden = false;
+      const c = cfg();
+      const box = el("div", "notice");
+      if (kind === "setup") {
+        box.append(el("strong", null, "Besucherzahlen einrichten: "), document.createTextNode("Trag unter „Einstellungen“ deinen GoatCounter-Code und API-Schlüssel ein."));
+      } else {
+        box.append(el("strong", null, "Besucherzahlen konnten nicht geladen werden. "),
+          document.createTextNode(kind === 401 ? "Der API-Schlüssel ist ungültig oder hat kein Leserecht. " : "Prüfe Code und API-Schlüssel unter „Einstellungen“. "));
+        const a = el("a", null, "GoatCounter-Dashboard öffnen ↗");
+        a.href = "https://" + c.gcCode + ".goatcounter.com"; a.target = "_blank"; a.rel = "noopener";
+        box.appendChild(a);
+      }
+      n.replaceChildren(box);
+    }
+    let lastDays = [];
+    let resizeTimer;
+    window.addEventListener("resize", () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => lastDays.length && drawChart(lastDays), 150); });
+    async function loadVisitors() {
+      const c = cfg();
+      $("gcNotice").hidden = true;
+      if (!c.gcCode || !c.gcKey) { gcNotice("setup"); $("chartBox").replaceChildren(el("p", "empty", "Nicht eingerichtet")); return; }
+      const end = new Date(Date.now() + 3600e3);
+      const start = new Date(); start.setDate(start.getDate() - 29); start.setHours(0, 0, 0, 0);
+      const range = { start: isoHour(start), end: isoHour(end) };
+      try {
+        const total = await gc("/stats/total", range);
+        const days = (total.stats || []).map((s) => ({ day: s.day, count: s.daily || 0 }));
+        lastDays = days;
+        drawChart(days);
+        const sum = (n) => days.slice(-n).reduce((a, d) => a + d.count, 0);
+        $("visToday").textContent = nf.format(sum(1));
+        const y = days.length > 1 ? days[days.length - 2].count : 0;
+        $("visTodayS").textContent = "gestern: " + nf.format(y);
+        $("vis7").textContent = nf.format(sum(7));
+        $("vis30").textContent = "30 Tage: " + nf.format(total.total ?? sum(30));
+
+        // Ranglisten nacheinander (GoatCounter erlaubt 4 Anfragen pro Sekunde)
+        const hits = await gc("/stats/hits", { ...range, limit: 10 });
+        rankList("rankPages", (hits.hits || []).map((h) => ({ name: h.path === "/" ? "/ (Startseite)" : h.path, count: h.count })));
+        const pages = [["toprefs", "rankRefs"], ["locations", "rankLoc"], ["browsers", "rankBrowsers"], ["systems", "rankSystems"], ["sizes", "rankSizes"]];
+        for (const [page, id] of pages) {
+          try {
+            const r = await gc("/stats/" + page, { ...range, limit: 6 });
+            rankList(id, r.stats, page === "toprefs" ? (x) => x.name || "Direkt / unbekannt" : undefined);
+          } catch { rankList(id, []); }
+          await new Promise((res) => setTimeout(res, 260));
+        }
+      } catch (e) {
+        gcNotice(e.status || "net");
+        $("chartBox").replaceChildren(el("p", "empty", "Keine Daten"));
+      }
+    }
+
+    /* ============ TEXT-EDITOR ============ */
+    let original = null;   // Inhalt beim Laden
+    let fileSha = null;    // Version der Datei auf GitHub (für sicheres Speichern)
+    const fields = [];     // { path, kind, input, initial }
+
+    function getAt(obj, path) { return path.reduce((o, k) => o[k], obj); }
+    function setAt(obj, path, val) { const last = path[path.length - 1]; getAt(obj, path.slice(0, -1))[last] = val; }
+    const label = (k) => LABELS[k] || k.replace(/_/g, " ");
+    function valueOf(f) {
+      if (f.kind === "tags") return f.input.value.split(",").map((s) => s.trim()).filter(Boolean);
+      return f.input.value;
+    }
+    function changed(f) { return JSON.stringify(valueOf(f)) !== JSON.stringify(f.initial); }
+    function dirty() { return fields.some(changed); }
+    function updateDirty() {
+      const n = fields.filter(changed).length;
+      fields.forEach((f) => f.wrap.classList.toggle("changed", changed(f)));
+      $("dirtyPill").textContent = n ? n + (n === 1 ? " Feld geändert" : " Felder geändert") : "Keine Änderungen";
+      $("dirtyPill").className = "pill " + (n ? "mid" : "");
+      $("publishBtn").disabled = !n;
+    }
+    function autoGrow(t) { t.style.height = "auto"; t.style.height = t.scrollHeight + 2 + "px"; }
+
+    function makeField(key, value, path) {
+      const wrap = el("div", "field");
+      const id = "f_" + path.join("_");
+      const lab = el("label", "f", label(key)); lab.htmlFor = id;
+      let input, kind = "text";
+      if (Array.isArray(value)) {
+        kind = "tags";
+        input = el("input", "t"); input.value = value.join(", ");
+      } else if (LONG_KEYS.includes(key) || String(value).length > 80) {
+        input = el("textarea", "t"); input.value = value; input.rows = 3;
+        input.addEventListener("input", () => autoGrow(input));
+        requestAnimationFrame(() => autoGrow(input));
+      } else {
+        input = el("input", "t"); input.value = value;
+      }
+      input.id = id;
+      wrap.append(lab, input);
+      if (kind === "tags") wrap.appendChild(el("div", "hint", "Mehrere mit Komma trennen"));
+      const f = { path, kind, input, wrap, initial: value };
+      fields.push(f);
+      input.addEventListener("input", updateDirty);
+      return wrap;
+    }
+    function buildGroup(obj, path, container) {
+      Object.entries(obj).forEach(([k, v]) => {
+        if (k.startsWith("_")) return; // Technische Felder (Links, Status-Farbe) nicht bearbeiten
+        const p = [...path, k];
+        if (typeof v === "string" || (Array.isArray(v) && v.every((x) => typeof x === "string"))) {
+          container.appendChild(makeField(k, v, p));
+        } else if (Array.isArray(v)) {
+          const head = el("label", "f", label(k)); head.style.marginTop = "6px"; head.style.marginBottom = "10px";
+          container.appendChild(head);
+          v.forEach((item, i) => {
+            const card = el("div", "sub-card");
+            const title = el("h4", null, item.name || item.titel || label(k) + " " + (i + 1));
+            card.appendChild(title);
+            const inner = el("div", Object.keys(item).filter((x) => !x.startsWith("_")).length === 2 && item.name !== undefined && item.beschreibung !== undefined && String(item.beschreibung).length < 60 ? "row2" : "");
+            card.appendChild(inner);
+            buildGroup(item, [...p, i], inner);
+            // Titel der Karte live mitändern
+            const nameField = fields.find((f) => f.path.join() === [...p, i, item.name !== undefined ? "name" : "titel"].join());
+            if (nameField) nameField.input.addEventListener("input", () => (title.textContent = nameField.input.value || "(leer)"));
+            container.appendChild(card);
+          });
+        } else if (v && typeof v === "object") {
+          buildGroup(v, p, container);
+        }
+      });
+    }
+    async function loadEditor() {
+      const form = $("editorForm");
+      form.replaceChildren(el("p", "empty", "Wird geladen …"));
+      fields.length = 0;
+      try {
+        const file = await gh(repoPath() + "/contents/" + DEFAULTS.file);
+        fileSha = file.sha;
+        original = JSON.parse(b64decode(file.content));
+      } catch (e) {
+        original = null;
+        const msg = e.status === 404
+          ? "Die Datei „content.json“ fehlt im Repository. Lade sie zusammen mit der index.html hoch."
+          : "Texte konnten nicht geladen werden: " + e.message;
+        form.replaceChildren(el("div", "notice", msg));
+        return;
+      }
+      form.replaceChildren();
+      Object.entries(original).forEach(([section, data]) => {
+        const fs = el("fieldset");
+        fs.appendChild(el("legend", null, label(section)));
+        buildGroup(data, [section], fs);
+        form.appendChild(fs);
+      });
+      updateDirty();
+    }
+    $("discardBtn").addEventListener("click", () => {
+      if (!dirty() || confirm("Alle ungespeicherten Änderungen verwerfen?")) { original = null; loadEditor(); }
+    });
+
+    async function waitForDeploy(since) {
+      const pill = $("dirtyPill");
+      pill.className = "pill mid"; pill.textContent = "Wird veröffentlicht …";
+      for (let i = 0; i < 36; i++) {
+        await new Promise((r) => setTimeout(r, 5000));
+        try {
+          const b = await gh(repoPath() + "/pages/builds/latest");
+          if (new Date(b.created_at) >= since - 60000) {
+            if (b.status === "built") { pill.className = "pill ok"; pill.textContent = "Live ✓"; toast("Änderungen sind online."); loadStatus(); return; }
+            if (b.status === "errored") { pill.className = "pill bad"; pill.textContent = "Fehler beim Veröffentlichen"; return; }
+          }
+        } catch { break; }
+      }
+      pill.className = "pill"; pill.textContent = "Gespeichert, gleich online";
+    }
+    $("publishBtn").addEventListener("click", async () => {
+      if (!original || !dirty()) return;
+      const next = JSON.parse(JSON.stringify(original));
+      fields.forEach((f) => setAt(next, f.path, valueOf(f)));
+      const msg = $("commitMsg").value.trim() || "Texte über die Konsole aktualisiert";
+      $("publishBtn").disabled = true;
+      const since = Date.now();
+      try {
+        const res = await gh(repoPath() + "/contents/" + DEFAULTS.file, {
+          method: "PUT",
+          body: JSON.stringify({ message: msg, content: b64encode(JSON.stringify(next, null, 2) + "\n"), sha: fileSha }),
+        });
+        fileSha = res.content.sha;
+        original = next;
+        fields.forEach((f) => (f.initial = valueOf(f)));
+        $("commitMsg").value = "";
+        updateDirty();
+        toast("Gespeichert. Wird jetzt veröffentlicht …");
+        waitForDeploy(since);
+      } catch (e) {
+        updateDirty();
+        if (e.status === 409 || e.status === 422) {
+          alert("Die Datei wurde inzwischen woanders geändert. Kopiere deine Änderungen, klicke auf „Verwerfen“ und trag sie erneut ein.");
+        } else if (e.status === 403) {
+          alert("Keine Berechtigung. Dein Token braucht das Recht „Contents: Read and write“.");
+        } else {
+          alert("Speichern fehlgeschlagen: " + e.message);
+        }
+      }
+    });
+    window.addEventListener("beforeunload", (e) => { if (dirty()) { e.preventDefault(); e.returnValue = ""; } });
+
+    /* ============ EINSTELLUNGEN ============ */
+    function fillSettings() {
+      const c = cfg();
+      $("setRepo").value = c.repo; $("setSite").value = c.site;
+      $("setGcCode").value = c.gcCode; $("setGcKey").value = c.gcKey;
+      let skip = false; try { skip = localStorage.getItem("skipgc") === "t"; } catch {}
+      $("skipGc").checked = skip;
+    }
+    $("saveSettings").addEventListener("click", () => {
+      const repoChanged = $("setRepo").value.trim() !== cfg().repo;
+      store.set("k_repo", $("setRepo").value.trim() || DEFAULTS.repo);
+      store.set("k_site", $("setSite").value.trim() || DEFAULTS.site);
+      store.set("k_gc_code", $("setGcCode").value.trim());
+      store.set("k_gc_key", $("setGcKey").value.trim());
+      try { $("skipGc").checked ? localStorage.setItem("skipgc", "t") : localStorage.removeItem("skipgc"); } catch {}
+      toast("Gespeichert.");
+      if (repoChanged) original = null;
+      loadStatus(); loadVisitors();
+    });
+
+    /* ============ START ============ */
+    function startApp() {
+      $("loginView").hidden = true;
+      $("appView").hidden = false;
+      $("overviewSub").textContent = "Status von " + cfg().site.replace(/^https?:\/\//, "") + " und Besucher der letzten 30 Tage.";
+      showTab("overview");
+      loadStatus();
+      loadVisitors();
+    }
+    (async () => {
+      if (!token) return showLogin();
+      try { await tryLogin(); startApp(); }
+      catch (e) { store.del("k_token"); token = null; showLogin(e.message); }
+    })();
+  })();
   </script>
 </body>
 </html>
