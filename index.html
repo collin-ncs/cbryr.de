@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Collin – Portfolio</title>
+  <title>cbryr</title>
   <meta name="description" content="Collin – Azubi Fachinformatiker für Systemintegration. Homelab, Self-Hosting und Bastelprojekte." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -168,6 +168,11 @@
     /* Texte aus content.json laden, ohne alte Texte aufblitzen zu lassen */
     html.c-wait .hero, html.c-wait main { opacity: 0; }
     .hero, main { transition: opacity .25s; }
+
+    /* Schreibmaschinen-Effekt für die Überschrift */
+    .type-caret { display: inline-block; width: 0.07em; height: 0.9em; margin-left: 0.06em; background: var(--accent); vertical-align: -0.05em; animation: blink 1s steps(1) infinite; transition: opacity .4s; }
+    .type-caret.typing { animation: none; }
+    .type-caret.gone { opacity: 0; }
 
     /* Einblend-Animation */
     .reveal { opacity: 0; transform: translateY(12px); transition: opacity .6s, transform .6s; }
@@ -404,7 +409,35 @@
       .then((r) => (r.ok ? r.json() : Promise.reject()))
       .then(applyContent)
       .catch(() => {})
-      .finally(() => { clearTimeout(safety); showPage(); });
+      .finally(() => { clearTimeout(safety); showPage(); typeHeadline(); });
+
+    // ============ ÜBERSCHRIFT TIPPEN ============
+    function typeHeadline() {
+      const h1 = document.querySelector("h1[data-c='hero.titel']");
+      const text = h1.textContent;
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches || !text) return;
+      h1.setAttribute("aria-label", text);          // Screenreader lesen den ganzen Satz
+      h1.style.minHeight = h1.offsetHeight + "px";  // verhindert, dass die Seite beim Tippen springt
+      const out = document.createElement("span");
+      out.setAttribute("aria-hidden", "true");
+      const caret = document.createElement("span");
+      caret.className = "type-caret typing";
+      caret.setAttribute("aria-hidden", "true");
+      h1.replaceChildren(out, caret);
+      let i = 0;
+      const step = () => {
+        out.textContent = text.slice(0, ++i);
+        if (i < text.length) {
+          const ch = text[i - 1];
+          setTimeout(step, ch === "," || ch === "." ? 260 : 55 + Math.random() * 55);
+        } else {
+          caret.classList.remove("typing");
+          setTimeout(() => caret.classList.add("gone"), 2600);
+          setTimeout(() => { h1.textContent = text; h1.style.minHeight = ""; }, 3100);
+        }
+      };
+      setTimeout(step, 350);
+    }
 
     // Sektionen beim Scrollen einblenden
     const io = new IntersectionObserver((entries) => {
