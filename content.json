@@ -1,0 +1,62 @@
+{
+  "hero": {
+    "titel": "Hi, ich bin Collin.",
+    "text": "Azubi zum Fachinformatiker für Systemintegration. Ich baue Dinge, die ich selbst brauche: Server im eigenen Homelab, kleine Web-Apps und Hardware-Projekte."
+  },
+  "ueber": {
+    "titel": "Wer ich bin",
+    "absatz1": "Seit September 2026 mache ich meine Ausbildung als Fachinformatiker für Systemintegration. Mein Interesse an IT hat aber schon viel früher angefangen, mit dem Wunsch zu verstehen, wie Systeme hinter den Kulissen funktionieren.",
+    "absatz2": "Am liebsten lerne ich, indem ich baue. Zuhause betreibe ich einen eigenen Proxmox-Server, auf dem meine Fotos, Dokumente und mein Smart Home laufen.",
+    "ausbildung": "Fachinformatiker Systemintegration · 1. Lehrjahr",
+    "standort": "Thüringen",
+    "gerade_dabei": "Nowplay & Homelab-Ausbau",
+    "werkzeuge": "Proxmox, Linux, Home Assistant, Bambu Lab A1 Mini"
+  },
+  "skills": {
+    "titel": "Womit ich arbeite",
+    "bereiche": [
+      { "titel": "Server & Self-Hosting", "tags": ["Proxmox", "LXC", "Debian", "CasaOS", "Docker"] },
+      { "titel": "Smart Home", "tags": ["Home Assistant", "IR-Steuerung", "Automationen"] },
+      { "titel": "Entwicklung", "tags": ["HTML/CSS/JS", "Web-Apps", "Swift", "Git"] },
+      { "titel": "Hardware & Maker", "tags": ["3D-Druck", "Upcycling"] }
+    ]
+  },
+  "projekte": {
+    "titel": "Woran ich baue",
+    "liste": [
+      {
+        "name": "Nowplay",
+        "status": "In Entwicklung",
+        "beschreibung": "Ein Spotify-Display für den Schreibtisch: Eine Web-App macht aus einem alten Galaxy S10 einen Now-Playing-Bildschirm, inspiriert vom Spotify Car Thing. Open Source unter MIT-Lizenz.",
+        "tags": ["Web-App", "Spotify API", "Upcycling"],
+        "_typ": "wip",
+        "_link": "https://github.com/collin-ncs/nowplay"
+      },
+      {
+        "name": "Kerbe",
+        "status": "Idee",
+        "beschreibung": "Mein MacBook Pro M1 hat keine Notch, also baue ich mir eine. Eine macOS-App, die oben am Bildschirm eine interaktive Notch mit nützlichen Infos einblendet.",
+        "tags": ["macOS", "Swift"],
+        "_typ": "idea",
+        "_link": ""
+      }
+    ]
+  },
+  "homelab": {
+    "titel": "Homelab",
+    "text": "Mein Spielplatz und meine Lernumgebung. Alles läuft selbst gehostet auf Proxmox, statt in der Cloud fremder Anbieter.",
+    "dienste": [
+      { "name": "immich", "beschreibung": "Foto-Cloud statt Google Photos" },
+      { "name": "paperless-ngx", "beschreibung": "Dokumentenarchiv mit OCR" },
+      { "name": "homeassistant", "beschreibung": "Smart Home inkl. IR-Steuerung" },
+      { "name": "jellyfin", "beschreibung": "Medienserver" },
+      { "name": "casaos", "beschreibung": "Speicher und Docker-Apps" },
+      { "name": "unifi-os", "beschreibung": "Netzwerkverwaltung" },
+      { "name": "beszel", "beschreibung": "Monitoring" }
+    ]
+  },
+  "kontakt": {
+    "titel": "Lass uns schreiben",
+    "text": "Fragen zu einem Projekt, Ideen oder einfach Lust auf Austausch über Homelabs? Melde dich gern."
+  }
+}

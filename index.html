@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" class="c-wait">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -165,11 +165,17 @@
 
     footer { padding: 32px 0; text-align: center; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border); }
 
+    /* Texte aus content.json laden, ohne alte Texte aufblitzen zu lassen */
+    html.c-wait .hero, html.c-wait main { opacity: 0; }
+    .hero, main { transition: opacity .25s; }
+
     /* Einblend-Animation */
     .reveal { opacity: 0; transform: translateY(12px); transition: opacity .6s, transform .6s; }
     .reveal.visible { opacity: 1; transform: none; }
     @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } html { scroll-behavior: auto; } }
   </style>
+  <!-- Besucherzählung mit GoatCounter (ohne Cookies). "cbryr" ist dein GoatCounter-Code. -->
+  <script data-goatcounter="https://cbryr.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
 
@@ -192,8 +198,8 @@
     <div class="wrap hero-grid">
       <div>
       <div class="prompt mono">~ $ whoami <span class="cursor"></span></div>
-      <h1>Hi, ich bin Collin.</h1>
-      <p>Azubi zum Fachinformatiker für Systemintegration. Ich baue Dinge, die ich selbst brauche: Server im eigenen Homelab, kleine Web-Apps und Hardware-Projekte.</p>
+      <h1 data-c="hero.titel">Hi, ich bin Collin.</h1>
+      <p data-c="hero.text">Azubi zum Fachinformatiker für Systemintegration. Ich baue Dinge, die ich selbst brauche: Server im eigenen Homelab, kleine Web-Apps und Hardware-Projekte.</p>
       <div class="hero-actions">
         <a href="#projects" class="btn primary">Projekte ansehen</a>
         <a href="https://github.com/collin-ncs" class="btn" target="_blank" rel="noopener">GitHub</a>
@@ -209,19 +215,19 @@
     <section id="about" class="reveal">
       <div class="wrap about">
         <div>
-          <h2>Wer ich bin</h2>
-          <p class="lead">Seit September 2026 mache ich meine Ausbildung als Fachinformatiker für Systemintegration. Mein Interesse an IT hat aber schon viel früher angefangen, mit dem Wunsch zu verstehen, wie Systeme hinter den Kulissen funktionieren.</p>
-          <p class="lead">Am liebsten lerne ich, indem ich baue. Zuhause betreibe ich einen eigenen Proxmox-Server, auf dem meine Fotos, Dokumente und mein Smart Home laufen.</p>
+          <h2 data-c="ueber.titel">Wer ich bin</h2>
+          <p class="lead" data-c="ueber.absatz1">Seit September 2026 mache ich meine Ausbildung als Fachinformatiker für Systemintegration. Mein Interesse an IT hat aber schon viel früher angefangen, mit dem Wunsch zu verstehen, wie Systeme hinter den Kulissen funktionieren.</p>
+          <p class="lead" data-c="ueber.absatz2">Am liebsten lerne ich, indem ich baue. Zuhause betreibe ich einen eigenen Proxmox-Server, auf dem meine Fotos, Dokumente und mein Smart Home laufen.</p>
         </div>
         <dl class="facts">
           <dt>Ausbildung</dt>
-          <dd>Fachinformatiker Systemintegration · 1. Lehrjahr</dd>
+          <dd data-c="ueber.ausbildung">Fachinformatiker Systemintegration · 1. Lehrjahr</dd>
           <dt>Standort</dt>
-          <dd>Thüringen</dd>
+          <dd data-c="ueber.standort">Thüringen</dd>
           <dt>Gerade dabei</dt>
-          <dd>Nowplay & Homelab-Ausbau</dd>
+          <dd data-c="ueber.gerade_dabei">Nowplay & Homelab-Ausbau</dd>
           <dt>Werkzeuge</dt>
-          <dd>Proxmox, Linux, Home Assistant, Bambu Lab A1 Mini</dd>
+          <dd data-c="ueber.werkzeuge">Proxmox, Linux, Home Assistant, Bambu Lab A1 Mini</dd>
         </dl>
       </div>
     </section>
@@ -229,8 +235,8 @@
     <!-- ============ WAS ICH MACHE ============ -->
     <section class="reveal">
       <div class="wrap">
-        <h2>Womit ich arbeite</h2>
-        <div class="skills">
+        <h2 data-c="skills.titel">Womit ich arbeite</h2>
+        <div class="skills" id="skillList">
           <div class="skill">
             <h3>Server & Self-Hosting</h3>
             <div class="tags"><span class="tag">Proxmox</span><span class="tag">LXC</span><span class="tag">Debian</span><span class="tag">CasaOS</span><span class="tag">Docker</span></div>
@@ -254,8 +260,8 @@
     <!-- ============ PROJEKTE ============ -->
     <section id="projects" class="reveal">
       <div class="wrap">
-        <h2>Woran ich baue</h2>
-        <div class="projects">
+        <h2 data-c="projekte.titel">Woran ich baue</h2>
+        <div class="projects" id="projectList">
 
           <article class="project">
             <div class="project-head">
@@ -283,11 +289,11 @@
     <!-- ============ HOMELAB ============ -->
     <section id="homelab" class="reveal">
       <div class="wrap">
-        <h2>Homelab</h2>
-        <p class="lead">Mein Spielplatz und meine Lernumgebung. Alles läuft selbst gehostet auf Proxmox, statt in der Cloud fremder Anbieter.</p>
+        <h2 data-c="homelab.titel">Homelab</h2>
+        <p class="lead" data-c="homelab.text">Mein Spielplatz und meine Lernumgebung. Alles läuft selbst gehostet auf Proxmox, statt in der Cloud fremder Anbieter.</p>
         <div class="terminal mono">
           <div class="terminal-bar"><i></i><i></i><i></i><span class="terminal-title">root@pve: ~</span></div>
-<pre><span class="t-g">root@pve</span>:~# pct list
+<pre id="terminalOut"><span class="t-g">root@pve</span>:~# pct list
 <span class="t-m">STATUS    NAME            BESCHREIBUNG</span>
 <span class="t-g">running</span>   immich          Foto-Cloud statt Google Photos
 <span class="t-g">running</span>   paperless-ngx   Dokumentenarchiv mit OCR
@@ -305,8 +311,8 @@
     <!-- ============ KONTAKT ============ -->
     <section id="contact" class="reveal contact">
       <div class="wrap">
-        <h2>Lass uns schreiben</h2>
-        <p class="lead">Fragen zu einem Projekt, Ideen oder einfach Lust auf Austausch über Homelabs? Melde dich gern.</p>
+        <h2 data-c="kontakt.titel">Lass uns schreiben</h2>
+        <p class="lead" data-c="kontakt.text">Fragen zu einem Projekt, Ideen oder einfach Lust auf Austausch über Homelabs? Melde dich gern.</p>
         <div class="hero-actions">
           <a href="mailto:mail@cbryr.de" class="btn primary">E-Mail schreiben</a>
           <a href="https://github.com/collin-ncs" class="btn" target="_blank" rel="noopener">GitHub</a>
@@ -337,6 +343,68 @@
       root.dataset.theme = isDark ? "light" : "dark";
       try { localStorage.setItem("theme", root.dataset.theme); } catch (e) {}
     });
+
+    // ============ TEXTE AUS content.json ============
+    // Die Konsole unter /admin/ bearbeitet diese Datei. Fällt das Laden aus,
+    // bleiben einfach die Texte stehen, die hier im HTML stehen.
+    function get(obj, path) { return path.split(".").reduce((o, k) => (o == null ? o : o[k]), obj); }
+    function el(tag, cls, text) {
+      const e = document.createElement(tag);
+      if (cls) e.className = cls;
+      if (text != null) e.textContent = text;
+      return e;
+    }
+    function tags(list) {
+      const box = el("div", "tags");
+      (list || []).forEach((t) => box.appendChild(el("span", "tag", t)));
+      return box;
+    }
+    function applyContent(c) {
+      document.querySelectorAll("[data-c]").forEach((node) => {
+        const v = get(c, node.dataset.c);
+        if (typeof v === "string") node.textContent = v;
+      });
+      if (c.skills && Array.isArray(c.skills.bereiche)) {
+        const box = document.getElementById("skillList");
+        box.replaceChildren(...c.skills.bereiche.map((b) => {
+          const d = el("div", "skill");
+          d.append(el("h3", null, b.titel), tags(b.tags));
+          return d;
+        }));
+      }
+      if (c.projekte && Array.isArray(c.projekte.liste)) {
+        const box = document.getElementById("projectList");
+        box.replaceChildren(...c.projekte.liste.map((p) => {
+          const a = el("article", "project");
+          const head = el("div", "project-head");
+          head.append(el("h3", null, p.name), el("span", "status " + (p._typ || "wip"), p.status));
+          a.append(head, el("p", null, p.beschreibung), tags(p.tags));
+          if (p._link) {
+            const link = el("a", "more", "Zum Repo →");
+            link.href = p._link; link.target = "_blank"; link.rel = "noopener";
+            a.appendChild(link);
+          }
+          return a;
+        }));
+      }
+      if (c.homelab && Array.isArray(c.homelab.dienste)) {
+        const pre = document.getElementById("terminalOut");
+        const g = (t) => el("span", "t-g", t);
+        const parts = [g("root@pve"), ":~# pct list\n", el("span", "t-m", "STATUS    NAME            BESCHREIBUNG"), "\n"];
+        c.homelab.dienste.forEach((d) => {
+          parts.push(g("running"), "   " + String(d.name).padEnd(16) + d.beschreibung + "\n");
+        });
+        parts.push("\n", g("root@pve"), ":~# ", el("span", "t-cursor"));
+        pre.replaceChildren(...parts);
+      }
+    }
+    const showPage = () => root.classList.remove("c-wait");
+    const safety = setTimeout(showPage, 1200);
+    fetch("content.json?v=" + Date.now(), { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then(applyContent)
+      .catch(() => {})
+      .finally(() => { clearTimeout(safety); showPage(); });
 
     // Sektionen beim Scrollen einblenden
     const io = new IntersectionObserver((entries) => {
