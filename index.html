@@ -158,6 +158,11 @@
     .t-cursor { display: inline-block; width: 8px; height: 1em; background: #ff7a45; vertical-align: -2px; animation: blink 1s steps(1) infinite; }
     .t-g { color: #ff7a45; } .t-m { color: #7d8590; } .t-y { color: #f0b85a; }
 
+    /* Discord-Button */
+    .discord-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--surface); color: var(--text); cursor: pointer; font-family: inherit; }
+    .discord-btn svg { color: #5865f2; }
+    .copy-hint { margin-top: 12px; font-size: 0.85rem; color: var(--muted); min-height: 1.3em; }
+
     /* Kontakt */
     .contact { text-align: center; }
     .contact .lead { margin: 0 auto 28px; }
@@ -187,7 +192,7 @@
   <!-- ============ NAVIGATION ============ -->
   <nav>
     <div class="wrap">
-      <a href="#" class="logo mono">collin<span>@</span>home</a>
+      <a href="#" class="logo mono">cbryr<span>.</span>de</a>
       <div class="nav-links">
         <a href="#about" class="hide-sm">Über mich</a>
         <a href="#projects">Projekte</a>
@@ -321,7 +326,12 @@
         <div class="hero-actions">
           <a href="mailto:mail@cbryr.de" class="btn primary">E-Mail schreiben</a>
           <a href="https://github.com/collin-ncs" class="btn" target="_blank" rel="noopener">GitHub</a>
+          <button type="button" class="btn discord-btn" id="discordBtn" data-user="collin.ncs" title="Discord-Namen kopieren">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M20.3 4.4A19.6 19.6 0 0 0 15.4 3l-.6 1.3a18 18 0 0 0-5.6 0L8.6 3a19.5 19.5 0 0 0-4.9 1.5C.6 9.1-.3 13.6.1 18.1a19.8 19.8 0 0 0 6 3l1.3-2a12.8 12.8 0 0 1-2-1l.5-.4a14 14 0 0 0 12.2 0l.5.4c-.6.4-1.3.7-2 1l1.3 2a19.7 19.7 0 0 0 6-3c.5-5.2-.8-9.7-3.6-13.7ZM8 15.3c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4Zm8 0c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4Z"/></svg>
+            <span class="discord-label">collin.ncs</span>
+          </button>
         </div>
+        <p class="copy-hint" id="discordHint" aria-live="polite"></p>
       </div>
     </section>
   </main>
@@ -348,6 +358,30 @@
       root.dataset.theme = isDark ? "light" : "dark";
       try { localStorage.setItem("theme", root.dataset.theme); } catch (e) {}
     });
+
+    // ============ DISCORD-NAMEN KOPIEREN ============
+    // Discord hat keine öffentlichen Profil-Links per Name, daher wird der Name kopiert.
+    (() => {
+      const b = document.getElementById("discordBtn");
+      const hint = document.getElementById("discordHint");
+      const label = b.querySelector(".discord-label");
+      const user = b.dataset.user;
+      let timer;
+      b.addEventListener("click", async () => {
+        let ok = false;
+        try { await navigator.clipboard.writeText(user); ok = true; } catch {
+          const t = document.createElement("textarea");
+          t.value = user; t.style.position = "fixed"; t.style.opacity = "0";
+          document.body.appendChild(t); t.select();
+          try { ok = document.execCommand("copy"); } catch {}
+          t.remove();
+        }
+        label.textContent = ok ? "Kopiert ✓" : user;
+        hint.textContent = ok ? "Discord-Name kopiert. In Discord unter „Freund hinzufügen“ einfügen." : "Mein Discord-Name: " + user;
+        clearTimeout(timer);
+        timer = setTimeout(() => { label.textContent = user; hint.textContent = ""; }, 3500);
+      });
+    })();
 
     // ============ TEXTE AUS content.json ============
     // Die Konsole unter /admin/ bearbeitet diese Datei. Fällt das Laden aus,
